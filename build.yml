@@ -17,8 +17,7 @@ jobs:
           mkdir mdk
           unzip -q mdk.zip -d mdk
           rm -rf mdk/src
-          cp -r src mdk/src
-          cp gradle.properties mdk/gradle.properties
+          unzip -q -o mod_src.zip -d mdk
       - name: Build
         working-directory: mdk
         run: |
