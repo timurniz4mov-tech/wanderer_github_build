@@ -9,6 +9,10 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import com.wanderer.mod.world.CampFeature;
+import com.wanderer.mod.world.DirtRoadFeature;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.ForgeSpawnEggItem;
@@ -32,6 +36,14 @@ public class WandererMod {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
+    public static final DeferredRegister<Feature<?>> FEATURES =
+            DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
+
+    public static final RegistryObject<Feature<NoneFeatureConfiguration>> DIRT_ROADS =
+            FEATURES.register("dirt_roads", () -> new DirtRoadFeature(NoneFeatureConfiguration.CODEC));
+    public static final RegistryObject<Feature<NoneFeatureConfiguration>> CAMP =
+            FEATURES.register("camp", () -> new CampFeature(NoneFeatureConfiguration.CODEC));
+
     public static final RegistryObject<EntityType<WandererEntity>> WANDERER = ENTITIES.register("wanderer",
             () -> EntityType.Builder.of(WandererEntity::new, MobCategory.CREATURE)
                     .sized(0.6F, 1.8F)
@@ -41,10 +53,14 @@ public class WandererMod {
     public static final RegistryObject<Item> WANDERER_SPAWN_EGG = ITEMS.register("wanderer_spawn_egg",
             () -> new ForgeSpawnEggItem(WANDERER, 0x3F5F3A, 0xE0AC82, new Item.Properties()));
 
+    public static final RegistryObject<Item> WANDERER_STAFF = ITEMS.register("wanderer_staff",
+            () -> new Item(new Item.Properties().stacksTo(1)));
+
     public WandererMod() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ENTITIES.register(bus);
         ITEMS.register(bus);
+        FEATURES.register(bus);
         bus.addListener(this::onAttributes);
         bus.addListener(this::onSpawnPlacements);
         bus.addListener(this::onCreativeTab);
@@ -63,6 +79,9 @@ public class WandererMod {
     private void onCreativeTab(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
             event.accept(WANDERER_SPAWN_EGG);
+        }
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(WANDERER_STAFF);
         }
     }
 
