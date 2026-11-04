@@ -7,15 +7,19 @@ import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class WandererRenderer extends HumanoidMobRenderer<WandererEntity, PlayerModel<WandererEntity>> {
-    private static final ResourceLocation TEXTURE =
-            new ResourceLocation(WandererMod.MODID, "textures/entity/wanderer.png");
+    private static final ResourceLocation[] TEXTURES = new ResourceLocation[] {
+            new ResourceLocation(WandererMod.MODID, "textures/entity/wanderer_0.png"),
+            new ResourceLocation(WandererMod.MODID, "textures/entity/wanderer_1.png")
+    };
 
     public WandererRenderer(EntityRendererProvider.Context context) {
-        super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);
+        // Скины с тонкими руками (Alex) -> slim модель
+        super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true), 0.5F);
     }
 
     @Override
     public ResourceLocation getTextureLocation(WandererEntity entity) {
-        return TEXTURE;
+        int skin = entity.getSkin();
+        return TEXTURES[(skin == 1) ? 1 : 0];
     }
 }

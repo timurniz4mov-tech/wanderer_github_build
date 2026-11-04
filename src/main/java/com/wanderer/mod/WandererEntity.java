@@ -31,6 +31,9 @@ public class WandererEntity extends PathfinderMob {
     private static final EntityDataAccessor<Integer> VARIANT =
             SynchedEntityData.defineId(WandererEntity.class, EntityDataSerializers.INT);
 
+    private static final EntityDataAccessor<Integer> SKIN =
+            SynchedEntityData.defineId(WandererEntity.class, EntityDataSerializers.INT);
+
     public WandererEntity(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
     }
@@ -55,6 +58,7 @@ public class WandererEntity extends PathfinderMob {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(VARIANT, 0);
+        this.entityData.define(SKIN, 0);
     }
 
     public int getVariant() {
@@ -65,16 +69,26 @@ public class WandererEntity extends PathfinderMob {
         this.entityData.set(VARIANT, variant);
     }
 
+    public int getSkin() {
+        return this.entityData.get(SKIN);
+    }
+
+    public void setSkin(int skin) {
+        this.entityData.set(SKIN, skin);
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putInt("Variant", getVariant());
+        tag.putInt("Skin", getSkin());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         setVariant(tag.getInt("Variant"));
+        setSkin(tag.getInt("Skin"));
     }
 
     @Nullable
@@ -85,6 +99,7 @@ public class WandererEntity extends PathfinderMob {
         SpawnGroupData data = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
         int variant = this.random.nextInt(2);
         setVariant(variant);
+        setSkin(this.random.nextInt(2)); // 50% / 50% один из двух скинов
         if (variant == 1) {
             this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.STICK));
         }
